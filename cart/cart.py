@@ -44,3 +44,17 @@ class Cart():
     def get_quantities(self):
         quantities = self.cart
         return quantities
+    
+    
+    def update(self, product, quantity):
+        product_id = str(product)
+        product_qty = int(quantity)
+        
+        # Get cart
+        cart = self.cart
+        # Update Dictionary/ Cart
+        cart[product_id] = product_qty
+        
+        self.session.modified = True
+        updated_cart = self.cart
+        return updated_cart

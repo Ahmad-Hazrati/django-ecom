@@ -19,7 +19,7 @@ def category(request, cat):
         return render(request, 'category.html', {'products': products, 'category': category})
     
     except:
-        messages.error(request, ("The requested catogory doesn't exist."))
+        messages.success(request, ("The requested catogory doesn't exist."))
         return redirect('home')
     
 

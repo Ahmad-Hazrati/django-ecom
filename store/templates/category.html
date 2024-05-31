@@ -14,6 +14,7 @@
     <div
       class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center"
     >
+    {% if products %}
       <!-- For Loop for Product -->
       {% for product in products %}
       <!-- If it is on sale -->
@@ -86,8 +87,15 @@
           </div>
         </div>
       </div>
-      {% endif %} {% endfor %}
+      {% endif %}
+       {% endfor %}
+      {% else %}
+      <center>
+        <p class="lead fw-normal mb-0">There's no item in this category!</p>
+      </center>
+      {% endif %}
     </div>
   </div>
+  <br /><br />
 </section>
 {% endblock %}

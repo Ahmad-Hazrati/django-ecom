@@ -21,6 +21,11 @@ def category(request, cat):
     except:
         messages.error(request, ("The requested catogory doesn't exist."))
         return redirect('home')
+    
+
+def category_summary(request):
+    categories = Category.objects.all()
+    return render(request, 'category_summary.html', {'categories':categories})
 
 
 def product(request, pk):

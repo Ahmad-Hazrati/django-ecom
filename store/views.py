@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User 
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm
+from .forms import SignUpForm, UserProfileForm
 from django import forms 
 
 
@@ -82,3 +82,20 @@ def register_user(request):
             return redirect('register')
     else :
         return render(request, 'register.html', {'form':form})
+
+def update_profile(request):
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        profile_form = UserProfileForm(request.POST or None, instance=current_user)
+        
+        if profile_form.is_valid():
+            profile_form.save()
+            
+            login(request, current_user)
+            messages.success(request, "You have updated your profile successfully!")
+            return redirect('home')
+        return render(request, "update_profile.html", {'profile_form': profile_form})
+    
+    else:
+        messages.success(request, "You must be login to update your profile!")
+        return redirect('home')

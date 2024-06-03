@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User 
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm, UserProfileForm
+from .forms import SignUpForm, UserProfileForm, ChangePasswordForm
 from django import forms 
 
 
@@ -99,3 +99,26 @@ def update_profile(request):
     else:
         messages.success(request, "You must be login to update your profile!")
         return redirect('home')
+
+
+def update_password(request):
+    if request.user.is_authenticated:
+        current_user = request.user 
+        # Did the user fill out the form
+        if request.method == 'POST':
+             form = ChangePasswordForm(current_user, request.POST)
+             # Is the form valid
+             if form.is_valid():
+                 form.save()
+                 messages.success(request, "Your password has been updated successfully. Please login again.")
+                 return redirect('login')
+             else:
+                 for error in list(form.errors.values()):
+                     messages.error(request, error)
+             
+        else:
+            form = ChangePasswordForm(current_user)
+    else:
+        messages.success(request, "You must be login to change your passord.")
+        
+    return render(request, 'update_password.html', {'form': form})

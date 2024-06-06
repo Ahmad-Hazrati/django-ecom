@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from .models import Product, Category
+from .models import Product, Category, Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User 
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm, UserProfileForm, ChangePasswordForm
+from .forms import SignUpForm, UserProfileForm, ChangePasswordForm, UserInfoForm
 from django import forms 
 
 
@@ -75,8 +75,8 @@ def register_user(request):
             # Login User
             user = authenticate(username=username, password=password)
             login(request, user)
-            messages.success(request, ("You have registered Successfully. Welcome!"))
-            return redirect('home')
+            messages.success(request, ("Account has been created successfully. Please fill out your user information."))
+            return redirect('update_info')
         else:
             messages.error(request, ("Whoops! Seems there was occurred an error, please try again."))
             return redirect('register')
@@ -122,3 +122,20 @@ def update_password(request):
         messages.success(request, "You must be login to change your passord.")
         
     return render(request, 'update_password.html', {'form': form})
+
+
+def update_info(request):
+    if request.user.is_authenticated:
+        current_user = Profile.objects.get(user__id=request.user.id)
+        form = UserInfoForm(request.POST or None, instance=current_user)
+        
+        if form.is_valid():
+            form.save()
+            
+            messages.success(request, "Your Info has been updated successfully!")
+            return redirect('home')
+        return render(request, "update_info.html", {'form': form})
+    
+    else:
+        messages.success(request, "You must be login to update your profile!")
+        return redirect('home')
